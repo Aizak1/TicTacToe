@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 7563529826866364873}
   - component: {fileID: 7325145659169090440}
   - component: {fileID: 9084144708728681529}
+  - component: {fileID: -6525693376901753757}
   m_Layer: 0
   m_Name: smallBlue
   m_TagString: Untagged
@@ -96,3 +97,15 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &-6525693376901753757
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5212858904173395460}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1203ad87347652b44972401d645bf3a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

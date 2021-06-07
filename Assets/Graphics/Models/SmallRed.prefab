@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1687072812097688009}
   - component: {fileID: 1888842985042934664}
   - component: {fileID: 112586687002453049}
+  - component: {fileID: 8408002267812996207}
   m_Layer: 0
   m_Name: SmallRed
   m_TagString: Untagged
@@ -96,3 +97,15 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &8408002267812996207
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4019860728054869508}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1203ad87347652b44972401d645bf3a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
