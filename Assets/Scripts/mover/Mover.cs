@@ -9,6 +9,8 @@ public class Mover : MonoBehaviour {
     [SerializeField]
     private Board board;
 
+    private Option<ChipComponent> currentChip;
+
     private void Update() {
         RaycastHit hit;
         if (!Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit)) {
@@ -17,30 +19,41 @@ public class Mover : MonoBehaviour {
 
         if (Input.GetMouseButtonDown(0)) {
             var picked = hit.transform.gameObject.GetComponent<ChipComponent>();
-            if(picked == null) {
-                board.currentChip = Option<ChipComponent>.None();
+            if (picked == null || !board.IsCorrectSelect(picked.chipData)){
+                currentChip = Option<ChipComponent>.None();
+                return;
             }
-            board.currentChip = Option<ChipComponent>.Some(picked);
+            currentChip = Option<ChipComponent>.Some(picked);
         }
 
 
-        if (board.currentChip.IsSome()) {
+        if (currentChip.IsSome()) {
             var position = new Vector3(hit.point.x, 0, hit.point.z) + Vector3.up;
-            board.currentChip.Peel().transform.position = position;
+            currentChip.Peel().transform.position = position;
         }
 
         if (Input.GetMouseButtonUp(0)) {
 
-            if(board.currentChip.IsNone()) {
+            if (currentChip.IsNone()) {
                 return;
             }
 
             var finalX = Mathf.RoundToInt(hit.point.x);
             var finalZ = Mathf.RoundToInt(hit.point.z);
-            var finalPosition = new Vector3Int(finalX, 0, finalZ);
 
-            board.currentChip.Peel().transform.position = finalPosition;
-            board.currentChip = Option<ChipComponent>.None();
+            if (!board.IsCorrectMove(currentChip.Peel().chipData, finalX, finalZ)) {
+                var startX = currentChip.Peel().chipData.x;
+                var startZ = currentChip.Peel().chipData.z;
+                var startPosition = new Vector3(startX, 0, startZ);
+                currentChip.Peel().transform.position = startPosition;
+                currentChip = Option<ChipComponent>.None();
+                return;
+            }
+            board.MakeMove(currentChip.Peel(), finalX, finalZ);
+
+            var finalPosition = new Vector3Int(finalX, 0, finalZ);
+            currentChip.Peel().transform.position = finalPosition;
+            currentChip = Option<ChipComponent>.None();
 
         }
     }

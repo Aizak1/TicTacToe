@@ -4,8 +4,9 @@ using UnityEngine;
 
 [System.Serializable]
 public struct ChipData {
-    public int x;
-    public int z;
+    public float x;
+    public float z;
     public int size;
     public bool isBlue;
+    public bool isUsed;
 }
