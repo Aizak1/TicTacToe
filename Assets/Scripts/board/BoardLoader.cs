@@ -21,7 +21,19 @@ namespace board {
             }
 
             string jsonData = boardParser.LoadFromJson(path);
+
+            if (string.IsNullOrWhiteSpace(jsonData)) {
+                Debug.LogError("No data in json file");
+                return;
+            }
+
             var boardData = boardParser.DeserializeChips(jsonData);
+
+            if(boardData.chipDatas == null) {
+                Debug.LogError("Wrong json data in loaded file");
+                return;
+            }
+
             board.ClearBoard();
             board.LoadBoard(boardData);
 
@@ -33,6 +45,12 @@ namespace board {
             var boardData = board.SaveBoard();
 
             string jsonData = boardParser.SerializeChips(boardData);
+
+            if (string.IsNullOrWhiteSpace(jsonData)) {
+                Debug.LogError("No data to load");
+                return;
+            }
+
             boardParser.SaveToJson(path, jsonData);
         }
 
@@ -44,7 +62,19 @@ namespace board {
             }
 
             string jsonData = boardParser.LoadFromJson(path);
+
+            if (string.IsNullOrWhiteSpace(jsonData)) {
+                Debug.LogError("No data in json file");
+                return;
+            }
+
             var boardData = boardParser.DeserializeChips(jsonData);
+
+            if (boardData.chipDatas == null) {
+                Debug.LogError("Wrong json data in loaded file");
+                return;
+            }
+
             board.ClearBoard();
             board.LoadBoard(boardData);
 

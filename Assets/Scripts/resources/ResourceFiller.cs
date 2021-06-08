@@ -20,12 +20,36 @@ namespace resources {
             resource.winCombinations = winCombinations;
 
             foreach (var item in redChipModels) {
-                var size = item.GetComponent<ChipComponent>().chipData.size;
+                var chip = item.GetComponent<ChipComponent>();
+                if(chip == null) {
+                    Debug.LogError("Wrong model");
+                    continue;
+                }
+
+                var size = chip.chipData.size;
+
+                if (resource.redChips.ContainsKey(size)) {
+                    Debug.LogError($"This model is already exists in resources {size}");
+                    continue;
+                }
+
                 resource.redChips.Add(size, item);
             }
 
             foreach (var item in blueChipModels) {
-                var size = item.GetComponent<ChipComponent>().chipData.size;
+                var chip = item.GetComponent<ChipComponent>();
+
+                if (chip == null) {
+                    Debug.LogError("Wrong model");
+                    continue;
+                }
+
+                var size = chip.chipData.size;
+                if (resource.blueChips.ContainsKey(size)) {
+                    Debug.LogError($"This model is already exists in resources {size}");
+                    continue;
+                }
+
                 resource.blueChips.Add(size, item);
             }
         }
