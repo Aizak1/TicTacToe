@@ -1,0 +1,7 @@
+{"chipDatas":[{"x":2.0999999046325685,"z":-1.0,"size":2,"isBlue":true,"isUsed":false},
+    {"x":1.5,"z":-1.0,"size":1,"isBlue":true,"isUsed":false},{"x":1.0,"z":-1.0,"size":0,"isBlue":true,"isUsed":false},
+    {"x":2.0999999046325685,"z":3.0,"size":2,"isBlue":false,"isUsed":false},{"x":1.5,"z":3.0,"size":1,"isBlue":false,"isUsed":false},
+    {"x":1.0,"z":3.0,"size":0,"isBlue":false,"isUsed":false},{"x":0.5,"z":3.0,"size":0,"isBlue":false,"isUsed":false},
+    {"x":0.0,"z":3.0,"size":1,"isBlue":false,"isUsed":false},{"x":-0.6000000238418579,"z":3.0,"size":2,"isBlue":false,"isUsed":false},
+    {"x":-0.6000000238418579,"z":-1.0,"size":2,"isBlue":true,"isUsed":false},{"x":0.5,"z":-1.0,"size":0,"isBlue":true,"isUsed":false},
+    {"x":0.0,"z":-1.0,"size":1,"isBlue":true,"isUsed":false}],"isBlueTurn":true}

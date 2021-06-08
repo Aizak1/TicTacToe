@@ -1,38 +1,29 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using chip;
+using System.IO;
 
-public class BoardParser : MonoBehaviour {
-    private const string NEW_GAME_PATH = "New.json";
-    private const string LOAD_GAME_PATH = "Load.json";
+namespace board {
+    public class BoardParser : MonoBehaviour {
 
-    public string SerializeChips(ChipData[] chipDatas) {
-        return JsonUtility.ToJson(chipDatas);
-    }
+        public string SerializeChips(BoardData boardData) {
+            return JsonUtility.ToJson(boardData);
+        }
 
-    public ChipData[] DeserializeChips(string json) {
-        return JsonUtility.FromJson<ChipData[]>(json);
-    }
+        public BoardData DeserializeChips(string json) {
+            return JsonUtility.FromJson<BoardData>(json);
+        }
 
-    public void SaveToJson(string path) {
+        public void SaveToJson(string path, string json) {
+            using (StreamWriter streamWriter = new StreamWriter(path)) {
+                streamWriter.Write(json);
+            }
+        }
 
-    }
-
-    public void LoadFromJson(string path) {
-
-    }
-
-    public void LoadGame() {
-
-    }
-
-    public void SaveGame() {
-
-    }
-
-    public void StartNewGame() {
-
+        public string LoadFromJson(string path) {
+            using (StreamReader reader = new StreamReader(path)) {
+                string json = reader.ReadToEnd();
+                return json;
+            }
+        }
     }
 }
 

@@ -9,9 +9,15 @@ namespace chip {
     public struct ChipData {
         public float x;
         public float z;
-        public int size;
+        public Size size;
         public bool isBlue;
         public bool isUsed;
+    }
+
+    public enum Size {
+        Small,
+        Medium,
+        Big
     }
 
 }

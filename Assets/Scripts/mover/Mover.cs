@@ -14,8 +14,7 @@ namespace mover {
 
         private void Update() {
 
-            if (board.isGameEnded) {
-                enabled = false;
+            if (!board.isGameProcessing) {
                 return;
             }
 

@@ -10,27 +10,27 @@ namespace board {
         [SerializeField]
         private Resource resource;
 
-        private const int SIZE = 3;
+        private const int BOARD_SIZE = 3;
         private const int LOWER_BOUND = 0;
 
-        private bool isBlueTurn;
+        public bool isBlueTurn;
 
-        public Option<ChipComponent>[,] cells = new Option<ChipComponent>[SIZE, SIZE];
-        public bool isGameEnded;
+        public Option<ChipComponent>[,] cells = new Option<ChipComponent>[BOARD_SIZE, BOARD_SIZE];
+        public bool isGameProcessing;
 
         private void Awake() {
             isBlueTurn = true;
-            isGameEnded = false;
+            isGameProcessing = false;
 
-            for (int i = 0; i < SIZE; i++) {
-                for (int j = 0; j < SIZE; j++) {
+            for (int i = 0; i < BOARD_SIZE; i++) {
+                for (int j = 0; j < BOARD_SIZE; j++) {
                     cells[i, j] = Option<ChipComponent>.None();
                 }
             }
         }
 
         public bool IsCorrectMove(ChipData chipData, int x, int z) {
-            if (x < LOWER_BOUND || z < LOWER_BOUND || x >= SIZE || z >= SIZE) {
+            if (x < LOWER_BOUND || z < LOWER_BOUND || x >= BOARD_SIZE || z >= BOARD_SIZE) {
                 return false;
             }
 
@@ -83,8 +83,7 @@ namespace board {
                 } else {
                     Debug.Log("Red Wins");
                 }
-                isGameEnded = true;
-                enabled = false;
+                isGameProcessing = false;
                 return;
             }
 
@@ -119,6 +118,59 @@ namespace board {
             return isWinCombination;
         }
 
+
+        public BoardData SaveBoard() {
+            var chips = FindObjectsOfType<ChipComponent>();
+            ChipData[] chipDatas = new ChipData[chips.Length];
+            for (int i = 0; i < chipDatas.Length; i++) {
+                chipDatas[i] = chips[i].chipData;
+            }
+
+            var boardData = new BoardData() {
+                chipDatas = chipDatas,
+                isBlueTurn = isBlueTurn
+            };
+
+            return boardData;
+        }
+
+
+        public void LoadBoard(BoardData boardData) {
+            isGameProcessing = true;
+            isBlueTurn = boardData.isBlueTurn;
+            foreach (var item in boardData.chipDatas) {
+                GameObject chipModel;
+                if (item.isBlue) {
+                    chipModel = resource.blueChips[item.size];
+                } else {
+                    chipModel = resource.redChips[item.size];
+                }
+
+                var position = new Vector3(item.x, 0, item.z);
+                var rotation = chipModel.transform.rotation;
+                var chipObject = Instantiate(chipModel, position, rotation, transform);
+
+                var chip = chipObject.GetComponent<ChipComponent>();
+                chip.chipData = item;
+
+                bool isLowerThanBoard = item.x < LOWER_BOUND || item.z < LOWER_BOUND;
+                bool isHigherThanBoard = item.x >= BOARD_SIZE || item.z >= BOARD_SIZE;
+                if (isLowerThanBoard || isHigherThanBoard) {
+                    continue;
+                }
+
+                cells[(int)item.x, (int)item.z] = Option<ChipComponent>.Some(chip);
+            }
+
+        }
+
+        public void ClearBoard() {
+            cells = new Option<ChipComponent>[BOARD_SIZE, BOARD_SIZE];
+            var chips = FindObjectsOfType<ChipComponent>();
+            foreach (var item in chips) {
+                Destroy(item.gameObject);
+            }
+        }
     }
 }
 
