@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace chip {
     public class ChipComponent : MonoBehaviour {
-
+        public ChipData chipData;
     }
 }
 

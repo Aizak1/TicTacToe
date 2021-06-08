@@ -4,11 +4,12 @@ using UnityEngine;
 using chip;
 using vjp;
 
-public class Mover : MonoBehaviour
-{
-    private Option<ChipComponent> currentChip;
+public class Mover : MonoBehaviour {
 
-    void Update() {
+    [SerializeField]
+    private Board board;
+
+    private void Update() {
         RaycastHit hit;
         if (!Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit)) {
             return;
@@ -17,19 +18,20 @@ public class Mover : MonoBehaviour
         if (Input.GetMouseButtonDown(0)) {
             var picked = hit.transform.gameObject.GetComponent<ChipComponent>();
             if(picked == null) {
-                currentChip = Option<ChipComponent>.None();
+                board.currentChip = Option<ChipComponent>.None();
             }
-            currentChip = Option<ChipComponent>.Some(picked);
+            board.currentChip = Option<ChipComponent>.Some(picked);
         }
 
-        if (currentChip.IsSome()) {
+
+        if (board.currentChip.IsSome()) {
             var position = new Vector3(hit.point.x, 0, hit.point.z) + Vector3.up;
-            currentChip.Peel().transform.position = position;
+            board.currentChip.Peel().transform.position = position;
         }
 
         if (Input.GetMouseButtonUp(0)) {
 
-            if(currentChip.IsNone()) {
+            if(board.currentChip.IsNone()) {
                 return;
             }
 
@@ -37,8 +39,8 @@ public class Mover : MonoBehaviour
             var finalZ = Mathf.RoundToInt(hit.point.z);
             var finalPosition = new Vector3Int(finalX, 0, finalZ);
 
-            currentChip.Peel().transform.position = finalPosition;
-            currentChip = Option<ChipComponent>.None();
+            board.currentChip.Peel().transform.position = finalPosition;
+            board.currentChip = Option<ChipComponent>.None();
 
         }
     }
