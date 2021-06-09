@@ -13,14 +13,18 @@ namespace board {
         private const int BOARD_SIZE = 3;
         private const int LOWER_BOUND = 0;
 
-        public bool isBlueTurn;
+        public Option<ChipComponent>[,] cells;
+        public List<ChipComponent> chipsInGame;
 
-        public Option<ChipComponent>[,] cells = new Option<ChipComponent>[BOARD_SIZE, BOARD_SIZE];
+        public bool isBlueTurn;
         public bool isGameProcessing;
 
         private void Awake() {
             isBlueTurn = true;
             isGameProcessing = false;
+
+            cells = new Option<ChipComponent>[BOARD_SIZE,BOARD_SIZE];
+            chipsInGame = new List<ChipComponent>();
 
             for (int i = 0; i < BOARD_SIZE; i++) {
                 for (int j = 0; j < BOARD_SIZE; j++) {
@@ -31,6 +35,10 @@ namespace board {
 
         public bool IsCorrectMove(ChipData chipData, int x, int z) {
             if (x < LOWER_BOUND || z < LOWER_BOUND || x >= BOARD_SIZE || z >= BOARD_SIZE) {
+                return false;
+            }
+
+            if (chipData.isUsed) {
                 return false;
             }
 
@@ -64,6 +72,7 @@ namespace board {
         public void MakeMove(ChipComponent currentChip, int x, int z) {
 
             if (cells[x, z].IsSome()) {
+                chipsInGame.Remove(cells[x, z].Peel());
                 Destroy(cells[x, z].Peel().gameObject);
             }
             var data = new ChipData() {
@@ -77,7 +86,7 @@ namespace board {
             cells[x, z] = Option<ChipComponent>.Some(currentChip);
             cells[x, z].Peel().chipData.isUsed = true;
 
-            if (IsSideWin(cells,isBlueTurn)) {
+            if (IsTeamWin(cells,isBlueTurn,resource)) {
                 if (isBlueTurn) {
                     Debug.Log("Blue wins");
                 } else {
@@ -88,11 +97,19 @@ namespace board {
             }
 
             isBlueTurn = !isBlueTurn;
+
+            if (GetTeamMovesCount(chipsInGame, isBlueTurn) == 0) {
+                Debug.Log("Draw");
+                isGameProcessing = false;
+                return;
+            }
+
         }
 
-        public bool IsSideWin(Option<ChipComponent>[,] cells, bool isBlueTurn) {
+        public bool IsTeamWin(Option<ChipComponent>[,] cells, bool isBlueTurn, Resource res) {
+
             bool isWinCombination = false;
-            foreach (var combination in resource.winCombinations) {
+            foreach (var combination in res.winCombinations) {
                 bool color = isBlueTurn;
 
                 foreach (var position in combination.itemsPosition) {
@@ -118,12 +135,35 @@ namespace board {
             return isWinCombination;
         }
 
+        public int GetTeamMovesCount(List<ChipComponent> chipsInGame, bool isBlueTurn) {
+
+            int movesCount = 0;
+            foreach (var item in chipsInGame) {
+
+                if(item.chipData.isBlue != isBlueTurn) {
+                    continue;
+                }
+
+                if (item.chipData.isUsed) {
+                    continue;
+                }
+
+                for (int i = 0; i < BOARD_SIZE; i++) {
+                    for (int j = 0; j < BOARD_SIZE; j++) {
+                        if (IsCorrectMove(item.chipData, i, j)) {
+                            movesCount++;
+                        }
+                    }
+                }
+
+            }
+            return movesCount;
+        }
 
         public BoardData SaveBoard() {
-            var chips = FindObjectsOfType<ChipComponent>();
-            ChipData[] chipDatas = new ChipData[chips.Length];
+            ChipData[] chipDatas = new ChipData[chipsInGame.Count];
             for (int i = 0; i < chipDatas.Length; i++) {
-                chipDatas[i] = chips[i].chipData;
+                chipDatas[i] = chipsInGame[i].chipData;
             }
 
             var boardData = new BoardData() {
@@ -153,6 +193,8 @@ namespace board {
                 var chip = chipObject.GetComponent<ChipComponent>();
                 chip.chipData = item;
 
+                chipsInGame.Add(chip);
+
                 bool isLowerThanBoard = item.x < LOWER_BOUND || item.z < LOWER_BOUND;
                 bool isHigherThanBoard = item.x >= BOARD_SIZE || item.z >= BOARD_SIZE;
                 if (isLowerThanBoard || isHigherThanBoard) {
@@ -166,10 +208,10 @@ namespace board {
 
         public void ClearBoard() {
             cells = new Option<ChipComponent>[BOARD_SIZE, BOARD_SIZE];
-            var chips = FindObjectsOfType<ChipComponent>();
-            foreach (var item in chips) {
+            foreach (var item in chipsInGame) {
                 Destroy(item.gameObject);
             }
+            chipsInGame = new List<ChipComponent>();
         }
     }
 }
