@@ -19,9 +19,14 @@ namespace ui {
         private Text endMenuText;
 
         [SerializeField]
-        private Color redWinColor;
+        private Color redColor;
         [SerializeField]
-        private Color blueWinColor;
+        private Color blueColor;
+
+        [SerializeField]
+        private Light turnLight;
+        [SerializeField]
+        private float lightTransitionTime;
 
         private const string BLUE_WIN_TEXT = "Blue wins";
         private const string RED_WIN_TEXT = "Red wins";
@@ -30,6 +35,13 @@ namespace ui {
         private void Update() {
             if (mainMenu.enabled) {
                 return;
+            }
+
+            var time = lightTransitionTime * Time.deltaTime;
+            if (board.isBlueTurn) {
+                turnLight.color = Color.Lerp(turnLight.color, blueColor, time);
+            } else {
+                turnLight.color = Color.Lerp(turnLight.color, redColor, time);
             }
 
             if (board.isGameProcessing) {
@@ -42,11 +54,11 @@ namespace ui {
                 endMenu.enabled = true;
                 gameMenu.enabled = false;
                 if(board.gameResult == GameResult.BlueWins) {
-                    endMenuText.color = blueWinColor;
+                    endMenuText.color = blueColor;
                     endMenuText.text = BLUE_WIN_TEXT;
 
                 } else if (board.gameResult == GameResult.RedWins) {
-                    endMenuText.color = redWinColor;
+                    endMenuText.color = redColor;
                     endMenuText.text = RED_WIN_TEXT;
                 } else {
                     endMenuText.color = Color.white;
