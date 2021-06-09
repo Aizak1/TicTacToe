@@ -5,6 +5,13 @@ using vjp;
 using resources;
 
 namespace board {
+
+    public enum GameResult {
+        RedWins,
+        BlueWins,
+        Draw
+    }
+
     public class Board : MonoBehaviour {
 
         [SerializeField]
@@ -17,7 +24,9 @@ namespace board {
         public List<ChipComponent> chipsInGame;
 
         public bool isBlueTurn;
+
         public bool isGameProcessing;
+        public GameResult gameResult;
 
         private void Awake() {
             isBlueTurn = true;
@@ -88,9 +97,9 @@ namespace board {
 
             if (IsTeamWin(cells,isBlueTurn,resource)) {
                 if (isBlueTurn) {
-                    Debug.Log("Blue wins");
+                    gameResult = GameResult.BlueWins;
                 } else {
-                    Debug.Log("Red Wins");
+                    gameResult = GameResult.RedWins;
                 }
                 isGameProcessing = false;
                 return;
@@ -99,7 +108,7 @@ namespace board {
             isBlueTurn = !isBlueTurn;
 
             if (GetTeamMovesCount(chipsInGame, isBlueTurn) == 0) {
-                Debug.Log("Draw");
+                gameResult = GameResult.Draw;
                 isGameProcessing = false;
                 return;
             }

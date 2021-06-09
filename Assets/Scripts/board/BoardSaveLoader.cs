@@ -4,7 +4,7 @@ using System.IO;
 using UnityEngine;
 
 namespace board {
-    public class BoardLoader : MonoBehaviour {
+    public class BoardSaveLoader : MonoBehaviour {
         [SerializeField]
         private BoardParser boardParser;
         [SerializeField]
@@ -77,9 +77,8 @@ namespace board {
 
             board.ClearBoard();
             board.LoadBoard(boardData);
-
-
         }
+
         private string GetPersistentDataPath(string path) {
             return Path.Combine(Application.persistentDataPath, path);
         }
