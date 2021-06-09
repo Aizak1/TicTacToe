@@ -12,6 +12,8 @@ namespace mover {
 
         private Option<ChipComponent> currentChip;
 
+        private const float Y_ON_DRAG = 0.5f;
+
         private void Update() {
 
             if (!board.isGameProcessing) {
@@ -34,7 +36,7 @@ namespace mover {
 
 
             if (currentChip.IsSome()) {
-                var position = new Vector3(hit.point.x, 0, hit.point.z) + Vector3.up;
+                var position = new Vector3(hit.point.x, Y_ON_DRAG, hit.point.z);
                 currentChip.Peel().transform.position = position;
             }
 
