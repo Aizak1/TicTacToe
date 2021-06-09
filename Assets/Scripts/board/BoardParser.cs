@@ -4,11 +4,11 @@ using System.IO;
 namespace board {
     public class BoardParser : MonoBehaviour {
 
-        public string SerializeChips(BoardData boardData) {
+        public string SerializeBoardData(BoardData boardData) {
             return JsonUtility.ToJson(boardData);
         }
 
-        public BoardData DeserializeChips(string json) {
+        public BoardData DeserializeBoardData(string json) {
             return JsonUtility.FromJson<BoardData>(json);
         }
 
