@@ -15,73 +15,65 @@ namespace board {
 
         public void LoadGame() {
             string path = GetPersistentDataPath(LOAD_GAME_PATH);
-            // допустим тут файл существует
-            if (!File.Exists(path)) {
-                Debug.LogError("File does not exist");
-                return;
-            }
-
-            // А тут ОС остановила процесс игры и отдала время программе, которая поменяла права на чтение файла
-            string jsonData = boardParser.LoadFromJson(path);
-            // упс, несловленный эксепшн, необработанная ошибка
+            string jsonData = LoadTextFromFile(path);
 
             if (string.IsNullOrWhiteSpace(jsonData)) {
                 Debug.LogError("No data in json file");
                 return;
             }
 
-            var boardData = boardParser.DeserializeBoardData(jsonData);
+            var optionBoardData = boardParser.DeserializeBoardData(jsonData);
 
-            if(boardData.chipDatas == null) {
+            if(optionBoardData.IsNone()) {
                 Debug.LogError("Wrong json data in loaded file");
                 return;
             }
 
             board.ClearBoard();
-            board.LoadBoard(boardData);
+            board.InitializeBoard(optionBoardData.Peel());
 
         }
 
         public void SaveGame() {
             string path = GetPersistentDataPath(LOAD_GAME_PATH);
 
-            var boardData = board.SaveBoard();
+            var boardData = board.GetBoardData();
 
-            string jsonData = boardParser.SerializeBoardData(boardData);
-
-            // а если там некорректный джсон? раз уж проверям на налл/пробелы, то почему бы уже тогда не валидировать весь джсон?
-            if (string.IsNullOrWhiteSpace(jsonData)) {
-                Debug.LogError("No data to load");
+            if (boardData.chipDatas == null) {
+                Debug.LogError("Wrong data to save");
                 return;
             }
 
-            boardParser.SaveToJson(path, jsonData);
+            string jsonData = boardParser.SerializeBoardData(boardData);
+
+            if (string.IsNullOrWhiteSpace(jsonData)) {
+                Debug.LogError("Incorrect serialization");
+                return;
+            }
+
+            SaveTextToFile(path, jsonData);
         }
 
         public void StartNewGame() {
             string path = GetStreamingAssetsPath(NEW_GAME_PATH);
-            if (!File.Exists(path)) {
-                Debug.LogError("File does not exist");
-                return;
-            }
-
-            string jsonData = boardParser.LoadFromJson(path);
+            string jsonData = LoadTextFromFile(path);
 
             if (string.IsNullOrWhiteSpace(jsonData)) {
                 Debug.LogError("No data in json file");
                 return;
             }
 
-            var boardData = boardParser.DeserializeBoardData(jsonData);
+            var optionBoardData = boardParser.DeserializeBoardData(jsonData);
 
-            if (boardData.chipDatas == null) {
+            if (optionBoardData.IsNone()) {
                 Debug.LogError("Wrong json data in loaded file");
                 return;
             }
 
             board.ClearBoard();
-            board.LoadBoard(boardData);
+            board.InitializeBoard(optionBoardData.Peel());
         }
+
 
         private string GetPersistentDataPath(string path) {
             return Path.Combine(Application.persistentDataPath, path);
@@ -89,6 +81,36 @@ namespace board {
 
         private string GetStreamingAssetsPath(string path) {
             return Path.Combine(Application.streamingAssetsPath, path);
+        }
+
+
+        private void SaveTextToFile(string path, string text) {
+            using (StreamWriter streamWriter = new StreamWriter(path)) {
+                try {
+                    streamWriter.Write(text);
+                } catch (System.Exception ex) {
+                    Debug.LogError(ex.Message);
+                    return;
+                }
+            }
+        }
+
+        private string LoadTextFromFile(string path) {
+            using (StreamReader reader = new StreamReader(path)) {
+
+                if (!File.Exists(path)) {
+                    Debug.LogError("File does not exist");
+                    return null;
+                }
+
+                try {
+                    string json = reader.ReadToEnd();
+                    return json;
+                } catch (System.Exception ex) {
+                    Debug.LogError(ex.Message);
+                    return null;
+                }
+            }
         }
     }
 }

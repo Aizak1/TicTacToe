@@ -44,7 +44,7 @@ namespace ui {
                 turnLight.color = Color.Lerp(turnLight.color, redColor, time);
             }
 
-            if (board.isGameProcessing) {
+            if (board.gameState == GameState.InProcessing) {
 
                 gameMenu.enabled = true;
                 endMenu.enabled = false;

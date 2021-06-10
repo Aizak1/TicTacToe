@@ -28,12 +28,12 @@ namespace resources {
 
                 var size = chip.chipData.size;
 
-                if (resource.redChips.ContainsKey(size)) {
+                if (resource.redModels.ContainsKey(size)) {
                     Debug.LogError($"This model is already exists in resources {size}");
                     continue;
                 }
 
-                resource.redChips.Add(size, item);
+                resource.redModels.Add(size, item);
             }
 
             foreach (var item in blueChipModels) {
@@ -45,12 +45,12 @@ namespace resources {
                 }
 
                 var size = chip.chipData.size;
-                if (resource.blueChips.ContainsKey(size)) {
+                if (resource.blueModels.ContainsKey(size)) {
                     Debug.LogError($"This model is already exists in resources {size}");
                     continue;
                 }
 
-                resource.blueChips.Add(size, item);
+                resource.blueModels.Add(size, item);
             }
         }
     }

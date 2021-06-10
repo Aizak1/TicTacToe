@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using vjp;
 using resources;
+using combination;
 
 namespace board {
 
@@ -10,6 +11,11 @@ namespace board {
         RedWins,
         BlueWins,
         Draw
+    }
+
+    public enum GameState {
+        Paused,
+        InProcessing,
     }
 
     // класс называется доской, но ведёт себя как полноценный ящик
@@ -21,23 +27,18 @@ namespace board {
         private const int BOARD_SIZE = 3;
         private const int LOWER_BOUND = 0;
 
-        // дважды храним чипы, неужели этого никак нельзя было избежать?
         public Option<ChipComponent>[,] cells;
-        public List<ChipComponent> chipsInGame;
 
         public bool isBlueTurn;
 
-        // какой-то левый флаг, значение которого сложно понять без контекста использования
-        // использования таких вещей нужно избегать
-        public bool isGameProcessing;
+        public GameState gameState;
         public GameResult gameResult;
+
 
         private void Awake() {
             isBlueTurn = true;
-            isGameProcessing = false;
-
+            gameState = GameState.Paused;
             cells = new Option<ChipComponent>[BOARD_SIZE,BOARD_SIZE];
-            chipsInGame = new List<ChipComponent>();
 
             for (int i = 0; i < BOARD_SIZE; i++) {
                 for (int j = 0; j < BOARD_SIZE; j++) {
@@ -85,7 +86,6 @@ namespace board {
         public void MakeMove(ChipComponent currentChip, int x, int z) {
 
             if (cells[x, z].IsSome()) {
-                chipsInGame.Remove(cells[x, z].Peel());
                 Destroy(cells[x, z].Peel().gameObject);
             }
             var data = new ChipData() {
@@ -105,15 +105,15 @@ namespace board {
                 } else {
                     gameResult = GameResult.RedWins;
                 }
-                isGameProcessing = false;
+                gameState = GameState.Paused;
                 return;
             }
 
             isBlueTurn = !isBlueTurn;
-
+            var chipsInGame = FindObjectsOfType<ChipComponent>();
             if (GetTeamMovesCount(chipsInGame, isBlueTurn) == 0) {
                 gameResult = GameResult.Draw;
-                isGameProcessing = false;
+                gameState = GameState.Paused;
                 return;
             }
 
@@ -148,7 +148,7 @@ namespace board {
             return isWinCombination;
         }
 
-        public int GetTeamMovesCount(List<ChipComponent> chipsInGame, bool isBlueTurn) {
+        public int GetTeamMovesCount(ChipComponent[] chipsInGame, bool isBlueTurn) {
 
             int movesCount = 0;
             foreach (var item in chipsInGame) {
@@ -173,9 +173,9 @@ namespace board {
             return movesCount;
         }
 
-        // этот метод ничего не сохраняет, название врёт
-        public BoardData SaveBoard() {
-            ChipData[] chipDatas = new ChipData[chipsInGame.Count];
+        public BoardData GetBoardData() {
+            var chipsInGame = FindObjectsOfType<ChipComponent>();
+            ChipData[] chipDatas = new ChipData[chipsInGame.Length];
             for (int i = 0; i < chipDatas.Length; i++) {
                 chipDatas[i] = chipsInGame[i].chipData;
             }
@@ -189,15 +189,20 @@ namespace board {
         }
 
 
-        public void LoadBoard(BoardData boardData) {
-            isGameProcessing = true;
+        public void InitializeBoard(BoardData boardData) {
+            gameState = GameState.InProcessing;
             isBlueTurn = boardData.isBlueTurn;
             foreach (var item in boardData.chipDatas) {
                 GameObject chipModel;
+
+                if (!resource.blueModels.ContainsKey(item.size)) {
+                    Debug.LogError($"There is no model with {item.size} in resources");
+                }
+
                 if (item.isBlue) {
-                    chipModel = resource.blueChips[item.size];
+                    chipModel = resource.blueModels[item.size];
                 } else {
-                    chipModel = resource.redChips[item.size];
+                    chipModel = resource.redModels[item.size];
                 }
 
                 var position = new Vector3(item.x, 0, item.z);
@@ -206,8 +211,6 @@ namespace board {
 
                 var chip = chipObject.GetComponent<ChipComponent>();
                 chip.chipData = item;
-
-                chipsInGame.Add(chip);
 
                 bool isLowerThanBoard = item.x < LOWER_BOUND || item.z < LOWER_BOUND;
                 bool isHigherThanBoard = item.x >= BOARD_SIZE || item.z >= BOARD_SIZE;
@@ -221,12 +224,14 @@ namespace board {
         }
 
         public void ClearBoard() {
+            var chipsInGame = FindObjectsOfType<ChipComponent>();
             cells = new Option<ChipComponent>[BOARD_SIZE, BOARD_SIZE];
             foreach (var item in chipsInGame) {
                 Destroy(item.gameObject);
             }
-            chipsInGame = new List<ChipComponent>();
         }
+
+
     }
 }
 

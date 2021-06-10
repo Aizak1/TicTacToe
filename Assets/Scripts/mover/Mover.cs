@@ -11,36 +11,38 @@ namespace mover {
         private Board board;
 
         private Option<ChipComponent> currentChip;
+        private const float Y_ON_DRUGS = 0.5f;
+        RaycastHit hit;
 
-        // возможно ты имел в виду Y_ON_DRUGS, поскольку иначе я не могу понять что это значит
-        private const float Y_ON_DRAG = 0.5f;
 
         private void Update() {
 
             // Mover (казалось бы компонент отвечающий за передвижение) зависит от состояния игры
-            if (!board.isGameProcessing) {
+            if (board.gameState != GameState.InProcessing) {
                 return;
             }
 
-            // какой смысл рейкастить пока не нажата кнопка мыши?
-            RaycastHit hit;
-            if (!Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit)) {
-                return;
-            }
+            if (Input.GetMouseButton(0)) {
 
-            if (Input.GetMouseButtonDown(0)) {
-                var picked = hit.transform.gameObject.GetComponent<ChipComponent>();
-                if (picked == null || !board.IsCorrectSelect(picked.chipData)) {
-                    currentChip = Option<ChipComponent>.None();
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+                if (!Physics.Raycast(ray, out hit)) {
                     return;
                 }
-                currentChip = Option<ChipComponent>.Some(picked);
-            }
 
+                if (Input.GetMouseButtonDown(0)) {
 
-            if (currentChip.IsSome()) {
-                var position = new Vector3(hit.point.x, Y_ON_DRAG, hit.point.z);
-                currentChip.Peel().transform.position = position;
+                    var picked = hit.transform.gameObject.GetComponent<ChipComponent>();
+                    if (picked == null || !board.IsCorrectSelect(picked.chipData)) {
+                        currentChip = Option<ChipComponent>.None();
+                        return;
+                    }
+                    currentChip = Option<ChipComponent>.Some(picked);
+                }
+
+                if (currentChip.IsSome()) {
+                    var position = new Vector3(hit.point.x, Y_ON_DRUGS, hit.point.z);
+                    currentChip.Peel().transform.position = position;
+                }
             }
 
             if (Input.GetMouseButtonUp(0)) {

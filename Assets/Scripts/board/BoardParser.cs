@@ -1,33 +1,43 @@
 using UnityEngine;
 using System.IO;
-
+using vjp;
+//GameDataJsonConverter
 namespace board {
-    // не так уж много парсинга тут, я бы сказал около 0
     public class BoardParser : MonoBehaviour {
 
         public string SerializeBoardData(BoardData boardData) {
-            // кидает ли JSONUtility эксепшны? почему нет обработки ошибок?
-            return JsonUtility.ToJson(boardData);
-        }
 
-        public BoardData DeserializeBoardData(string json) {
-            return JsonUtility.FromJson<BoardData>(json);
-        }
-
-        // больше похоже на сохранение текста в файл, причём тут джсон?
-        public void SaveToJson(string path, string json) {
-            // нет проверки на ошибки
-            using (StreamWriter streamWriter = new StreamWriter(path)) {
-                streamWriter.Write(json);
+            if(boardData.chipDatas == null) {
+                Debug.LogError("Wrong data to serialize");
+                return null;
             }
+
+            try {
+                return JsonUtility.ToJson(boardData);
+            } catch (System.Exception ex) {
+                Debug.LogError($"Serialization Error -  {ex.Message}");
+                return null;
+            }
+
         }
 
-        // а тут причём джсон? вроде читаем просто файл по указанному пути
-        public string LoadFromJson(string path) {
-            // нет проверки на ошибки
-            using (StreamReader reader = new StreamReader(path)) {
-                string json = reader.ReadToEnd();
-                return json;
+        public Option<BoardData> DeserializeBoardData(string json) {
+
+            if (string.IsNullOrWhiteSpace(json)) {
+                Debug.LogError("No data to deserialize");
+                return Option<BoardData>.None();
+            }
+
+            try {
+
+                var boardData = JsonUtility.FromJson<BoardData>(json);
+                return Option<BoardData>.Some(boardData);
+
+            } catch (System.Exception ex) {
+
+                Debug.LogError($"Deserialization Error -  {ex.Message}");
+                return Option<BoardData>.None();
+
             }
         }
     }
