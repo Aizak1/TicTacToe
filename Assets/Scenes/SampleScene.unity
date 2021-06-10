@@ -404,7 +404,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8103c9c570826fc46aa59a0a4c6af478, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  winCombinations: []
 --- !u!4 &52380056
 Transform:
   m_ObjectHideFlags: 0
@@ -2759,8 +2758,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: finisher.AppFinisher, Assembly-CSharp
+      - m_Target: {fileID: 1807142804}
+        m_TargetAssemblyTypeName: game.GameSaveLoader, Assembly-CSharp
         m_MethodName: Quit
         m_Mode: 1
         m_Arguments:
@@ -3113,39 +3112,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   resource: {fileID: 52380055}
-  winCombinations:
-  - itemsPosition:
-    - {x: 0, y: 0}
-    - {x: 0, y: 1}
-    - {x: 0, y: 2}
-  - itemsPosition:
-    - {x: 0, y: 2}
-    - {x: 1, y: 2}
-    - {x: 2, y: 2}
-  - itemsPosition:
-    - {x: 0, y: 0}
-    - {x: 1, y: 1}
-    - {x: 2, y: 2}
-  - itemsPosition:
-    - {x: 2, y: 0}
-    - {x: 1, y: 1}
-    - {x: 0, y: 2}
-  - itemsPosition:
-    - {x: 1, y: 0}
-    - {x: 1, y: 1}
-    - {x: 1, y: 2}
-  - itemsPosition:
-    - {x: 2, y: 0}
-    - {x: 2, y: 1}
-    - {x: 2, y: 2}
-  - itemsPosition:
-    - {x: 0, y: 0}
-    - {x: 1, y: 0}
-    - {x: 2, y: 0}
-  - itemsPosition:
-    - {x: 0, y: 1}
-    - {x: 1, y: 1}
-    - {x: 2, y: 1}
   redChipModels:
   - {fileID: 4019860728054869508, guid: df8066acad43a2e4ba2e4be8deb27fd2, type: 3}
   - {fileID: 8769312960018156875, guid: a19bce762fd726a4f934305fbadab713, type: 3}
@@ -5193,8 +5159,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: finisher.AppFinisher, Assembly-CSharp
+      - m_Target: {fileID: 1807142804}
+        m_TargetAssemblyTypeName: game.GameSaveLoader, Assembly-CSharp
         m_MethodName: Quit
         m_Mode: 1
         m_Arguments:

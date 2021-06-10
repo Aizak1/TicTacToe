@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using vjp;
 using resources;
-using combination;
 
 namespace game {
 
@@ -98,7 +97,7 @@ namespace game {
             board[x, z] = Option<ChipComponent>.Some(currentChip);
             board[x, z].Peel().chipData.isUsed = true;
 
-            if (IsTeamWin(board,isBlueTurn,resource)) {
+            if (IsTeamWin(board,BOARD_SIZE)) {
                 if (isBlueTurn) {
                     gameResult = GameResult.BlueWins;
                 } else {
@@ -118,33 +117,103 @@ namespace game {
 
         }
 
-        public bool IsTeamWin(Option<ChipComponent>[,] board, bool isBlueTurn, Resource res) {
+        public bool IsTeamWin(Option<ChipComponent>[,] board,int boardSize) {
+            int comboCounter;
 
-            bool isWinCombination = false;
-            foreach (var combination in res.winCombinations) {
-                bool color = isBlueTurn;
+            for (int i = 0; i < boardSize; i++) {
+                comboCounter = 1;
+                for (int j = 1; j < boardSize; j++) {
 
-                foreach (var position in combination.itemsPosition) {
-                    var combinationX = position.x;
-                    var combinationZ = position.y;
-                    if (board[combinationX, combinationZ].IsNone()) {
-                        isWinCombination = false;
+                    if (board[i, j].IsNone()) {
                         break;
                     }
-                    var chipColor = board[combinationX, combinationZ].Peel().chipData.isBlue;
-                    if(color != chipColor) {
-                        isWinCombination = false;
+
+                    if (board[i, j - 1].IsNone()) {
                         break;
                     }
-                    isWinCombination = true;
+
+                    var currentData = board[i, j].Peel().chipData;
+                    var previousData = board[i, j - 1].Peel().chipData;
+
+                    if(currentData.isBlue!=previousData.isBlue) {
+                        break;
+                    }
+                    comboCounter++;
                 }
+                if (comboCounter == boardSize) {
+                    return true;
+                }
+            }
 
-                if (isWinCombination) {
+            for (int i = 0; i < boardSize; i++) {
+                comboCounter = 1;
+                for (int j = 1; j < boardSize; j++) {
+
+                    if (board[j, i].IsNone()) {
+                        break;
+                    }
+
+                    if (board[j - 1, i].IsNone()) {
+                        break;
+                    }
+
+                    var currentData = board[j, i].Peel().chipData;
+                    var previousData = board[j - 1, i].Peel().chipData;
+
+                    if (currentData.isBlue != previousData.isBlue) {
+                        break;
+                    }
+                    comboCounter++;
+                }
+                if (comboCounter == boardSize) {
+                    return true;
+                }
+            }
+
+            comboCounter = 1;
+            for (int i = 0; i < boardSize - 1; i++) {
+                if (board[i, i].IsNone()) {
+                    break;
+                }
+                if (board[i + 1, i + 1].IsNone()) {
+                    break;
+                }
+                var currentData = board[i, i].Peel().chipData;
+                var nextData = board[i + 1, i + 1].Peel().chipData;
+                if(currentData.isBlue != nextData.isBlue) {
+                    break;
+                }
+                comboCounter++;
+            }
+
+            if(comboCounter == boardSize) {
+                return true;
+            }
+
+            comboCounter = 1;
+            for (int i = 0; i < boardSize - 1; i++) {
+
+                if (board[boardSize - (i + 1), i].IsNone()) {
                     break;
                 }
 
+                if(board[boardSize - (i + 2), i + 1].IsNone()) {
+                    break;
+                }
+
+                var currentData = board[boardSize - (i + 1), i].Peel().chipData;
+                var nextData = board[boardSize - (i + 2), i + 1].Peel().chipData;
+
+                if (currentData.isBlue != nextData.isBlue) {
+                    break;
+                }
+                comboCounter++;
             }
-            return isWinCombination;
+            if (comboCounter == boardSize) {
+                return true;
+            }
+
+            return false;
         }
 
         public int GetTeamMovesCount(ChipComponent[] chipsInGame, bool isBlueTurn) {
