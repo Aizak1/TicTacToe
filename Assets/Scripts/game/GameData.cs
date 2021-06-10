@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using chip;
 
-namespace board {
+namespace game {
     [System.Serializable]
-    public struct BoardData {
+    public struct GameData {
         public ChipData[] chipDatas;
         public bool isBlueTurn;
     }

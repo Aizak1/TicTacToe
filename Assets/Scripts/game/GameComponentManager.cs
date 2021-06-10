@@ -2,17 +2,17 @@ using UnityEngine;
 using mover;
 
 
-namespace board {
+namespace game {
     public class GameComponentManager : MonoBehaviour {
         [SerializeField]
-        private Board board;
+        private GameManager manager;
         [SerializeField]
         private Mover mover;
 
         private void Update() {
-            if (board.gameState == GameState.Paused) {
+            if (manager.gameState == GameState.Paused) {
                 mover.enabled = false;
-            } else if (board.gameState == GameState.InProcessing) {
+            } else if (manager.gameState == GameState.InProcessing) {
                 mover.enabled = true;
             }
         }

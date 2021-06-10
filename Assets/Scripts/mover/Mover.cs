@@ -1,14 +1,13 @@
-
 using UnityEngine;
 using chip;
 using vjp;
-using board;
+using game;
 
 namespace mover {
     public class Mover : MonoBehaviour {
 
         [SerializeField]
-        private Board board;
+        private GameManager manager;
 
         private Option<ChipComponent> currentChip;
         private const float Y_ON_DRUGS = 0.5f;
@@ -26,7 +25,7 @@ namespace mover {
                 if (Input.GetMouseButtonDown(0)) {
 
                     var picked = hit.transform.gameObject.GetComponent<ChipComponent>();
-                    if (picked == null || !board.IsCorrectSelect(picked.chipData)) {
+                    if (picked == null || !manager.IsCorrectSelect(picked.chipData)) {
                         currentChip = Option<ChipComponent>.None();
                         return;
                     }
@@ -48,7 +47,7 @@ namespace mover {
                 var finalX = Mathf.RoundToInt(hit.point.x);
                 var finalZ = Mathf.RoundToInt(hit.point.z);
 
-                if (!board.IsCorrectMove(currentChip.Peel().chipData, finalX, finalZ)) {
+                if (!manager.IsCorrectMove(currentChip.Peel().chipData, finalX, finalZ)) {
                     var startX = currentChip.Peel().chipData.x;
                     var startZ = currentChip.Peel().chipData.z;
                     var startPosition = new Vector3(startX, 0, startZ);
@@ -56,7 +55,7 @@ namespace mover {
                     currentChip = Option<ChipComponent>.None();
                     return;
                 }
-                board.MakeMove(currentChip.Peel(), finalX, finalZ);
+                manager.MakeMove(currentChip.Peel(), finalX, finalZ);
 
                 var finalPosition = new Vector3Int(finalX, 0, finalZ);
                 currentChip.Peel().transform.position = finalPosition;

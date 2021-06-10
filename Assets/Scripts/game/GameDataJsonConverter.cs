@@ -2,18 +2,18 @@ using UnityEngine;
 using System.IO;
 using vjp;
 //GameDataJsonConverter
-namespace board {
-    public class BoardParser : MonoBehaviour {
+namespace game {
+    public class GameDataJsonConverter : MonoBehaviour {
 
-        public string SerializeBoardData(BoardData boardData) {
+        public string SerializeGameData(GameData gameData) {
 
-            if(boardData.chipDatas == null) {
+            if(gameData.chipDatas == null) {
                 Debug.LogError("Wrong data to serialize");
                 return null;
             }
 
             try {
-                return JsonUtility.ToJson(boardData);
+                return JsonUtility.ToJson(gameData);
             } catch (System.Exception ex) {
                 Debug.LogError($"Serialization Error -  {ex.Message}");
                 return null;
@@ -21,22 +21,22 @@ namespace board {
 
         }
 
-        public Option<BoardData> DeserializeBoardData(string json) {
+        public Option<GameData> DeserializeGameData(string json) {
 
             if (string.IsNullOrWhiteSpace(json)) {
                 Debug.LogError("No data to deserialize");
-                return Option<BoardData>.None();
+                return Option<GameData>.None();
             }
 
             try {
 
-                var boardData = JsonUtility.FromJson<BoardData>(json);
-                return Option<BoardData>.Some(boardData);
+                var gameData = JsonUtility.FromJson<GameData>(json);
+                return Option<GameData>.Some(gameData);
 
             } catch (System.Exception ex) {
 
                 Debug.LogError($"Deserialization Error -  {ex.Message}");
-                return Option<BoardData>.None();
+                return Option<GameData>.None();
 
             }
         }

@@ -5,7 +5,7 @@ using vjp;
 using resources;
 using combination;
 
-namespace board {
+namespace game {
 
     public enum GameResult {
         RedWins,
@@ -18,8 +18,7 @@ namespace board {
         InProcessing,
     }
 
-    // класс называется доской, но ведёт себя как полноценный ящик
-    public class Board : MonoBehaviour {
+    public class GameManager : MonoBehaviour {
 
         [SerializeField]
         private Resource resource;
@@ -27,7 +26,7 @@ namespace board {
         private const int BOARD_SIZE = 3;
         private const int LOWER_BOUND = 0;
 
-        public Option<ChipComponent>[,] cells;
+        public Option<ChipComponent>[,] board;
 
         public bool isBlueTurn;
 
@@ -38,11 +37,11 @@ namespace board {
         private void Awake() {
             isBlueTurn = true;
             gameState = GameState.Paused;
-            cells = new Option<ChipComponent>[BOARD_SIZE,BOARD_SIZE];
+            board = new Option<ChipComponent>[BOARD_SIZE,BOARD_SIZE];
 
             for (int i = 0; i < BOARD_SIZE; i++) {
                 for (int j = 0; j < BOARD_SIZE; j++) {
-                    cells[i, j] = Option<ChipComponent>.None();
+                    board[i, j] = Option<ChipComponent>.None();
                 }
             }
         }
@@ -56,9 +55,9 @@ namespace board {
                 return false;
             }
 
-            if (cells[x, z].IsSome()) {
+            if (board[x, z].IsSome()) {
 
-                var cellChipData = cells[x, z].Peel().chipData;
+                var cellChipData = board[x, z].Peel().chipData;
                 if (chipData.isBlue == cellChipData.isBlue) {
                     return false;
                 }
@@ -85,8 +84,8 @@ namespace board {
 
         public void MakeMove(ChipComponent currentChip, int x, int z) {
 
-            if (cells[x, z].IsSome()) {
-                Destroy(cells[x, z].Peel().gameObject);
+            if (board[x, z].IsSome()) {
+                Destroy(board[x, z].Peel().gameObject);
             }
             var data = new ChipData() {
                 x = x,
@@ -96,10 +95,10 @@ namespace board {
                 size = currentChip.chipData.size
             };
             currentChip.chipData = data;
-            cells[x, z] = Option<ChipComponent>.Some(currentChip);
-            cells[x, z].Peel().chipData.isUsed = true;
+            board[x, z] = Option<ChipComponent>.Some(currentChip);
+            board[x, z].Peel().chipData.isUsed = true;
 
-            if (IsTeamWin(cells,isBlueTurn,resource)) {
+            if (IsTeamWin(board,isBlueTurn,resource)) {
                 if (isBlueTurn) {
                     gameResult = GameResult.BlueWins;
                 } else {
@@ -119,7 +118,7 @@ namespace board {
 
         }
 
-        public bool IsTeamWin(Option<ChipComponent>[,] cells, bool isBlueTurn, Resource res) {
+        public bool IsTeamWin(Option<ChipComponent>[,] board, bool isBlueTurn, Resource res) {
 
             bool isWinCombination = false;
             foreach (var combination in res.winCombinations) {
@@ -128,11 +127,11 @@ namespace board {
                 foreach (var position in combination.itemsPosition) {
                     var combinationX = position.x;
                     var combinationZ = position.y;
-                    if (cells[combinationX, combinationZ].IsNone()) {
+                    if (board[combinationX, combinationZ].IsNone()) {
                         isWinCombination = false;
                         break;
                     }
-                    var chipColor = cells[combinationX, combinationZ].Peel().chipData.isBlue;
+                    var chipColor = board[combinationX, combinationZ].Peel().chipData.isBlue;
                     if(color != chipColor) {
                         isWinCombination = false;
                         break;
@@ -173,26 +172,26 @@ namespace board {
             return movesCount;
         }
 
-        public BoardData GetBoardData() {
+        public GameData GetGameData() {
             var chipsInGame = FindObjectsOfType<ChipComponent>();
             ChipData[] chipDatas = new ChipData[chipsInGame.Length];
             for (int i = 0; i < chipDatas.Length; i++) {
                 chipDatas[i] = chipsInGame[i].chipData;
             }
 
-            var boardData = new BoardData() {
+            var gameData = new GameData() {
                 chipDatas = chipDatas,
                 isBlueTurn = isBlueTurn
             };
 
-            return boardData;
+            return gameData;
         }
 
 
-        public void InitializeBoard(BoardData boardData) {
+        public void InitializeGame(GameData gameData) {
             gameState = GameState.InProcessing;
-            isBlueTurn = boardData.isBlueTurn;
-            foreach (var item in boardData.chipDatas) {
+            isBlueTurn = gameData.isBlueTurn;
+            foreach (var item in gameData.chipDatas) {
                 GameObject chipModel;
 
                 if (!resource.blueModels.ContainsKey(item.size)) {
@@ -218,14 +217,14 @@ namespace board {
                     continue;
                 }
 
-                cells[(int)item.x, (int)item.z] = Option<ChipComponent>.Some(chip);
+                board[(int)item.x, (int)item.z] = Option<ChipComponent>.Some(chip);
             }
 
         }
 
-        public void ClearBoard() {
+        public void ResetGame() {
             var chipsInGame = FindObjectsOfType<ChipComponent>();
-            cells = new Option<ChipComponent>[BOARD_SIZE, BOARD_SIZE];
+            board = new Option<ChipComponent>[BOARD_SIZE, BOARD_SIZE];
             foreach (var item in chipsInGame) {
                 Destroy(item.gameObject);
             }

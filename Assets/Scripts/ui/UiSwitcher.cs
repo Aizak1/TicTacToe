@@ -1,12 +1,12 @@
 using UnityEngine;
-using board;
+using game;
 using UnityEngine.UI;
 
 namespace ui {
     public class UiSwitcher : MonoBehaviour {
 
         [SerializeField]
-        private Board board;
+        private GameManager manager;
 
         [SerializeField]
         private Canvas mainMenu;
@@ -38,13 +38,13 @@ namespace ui {
             }
 
             var time = lightTransitionTime * Time.deltaTime;
-            if (board.isBlueTurn) {
+            if (manager.isBlueTurn) {
                 turnLight.color = Color.Lerp(turnLight.color, blueColor, time);
             } else {
                 turnLight.color = Color.Lerp(turnLight.color, redColor, time);
             }
 
-            if (board.gameState == GameState.InProcessing) {
+            if (manager.gameState == GameState.InProcessing) {
 
                 gameMenu.enabled = true;
                 endMenu.enabled = false;
@@ -53,11 +53,11 @@ namespace ui {
 
                 endMenu.enabled = true;
                 gameMenu.enabled = false;
-                if(board.gameResult == GameResult.BlueWins) {
+                if(manager.gameResult == GameResult.BlueWins) {
                     endMenuText.color = blueColor;
                     endMenuText.text = BLUE_WIN_TEXT;
 
-                } else if (board.gameResult == GameResult.RedWins) {
+                } else if (manager.gameResult == GameResult.RedWins) {
                     endMenuText.color = redColor;
                     endMenuText.text = RED_WIN_TEXT;
                 } else {

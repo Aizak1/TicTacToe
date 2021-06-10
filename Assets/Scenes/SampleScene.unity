@@ -981,49 +981,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 388889055}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1 &412153624
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 412153626}
-  - component: {fileID: 412153625}
-  m_Layer: 0
-  m_Name: AppFinisher
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &412153625
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 412153624}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 26dcb2d0e23794144bcec48889ffd18b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!4 &412153626
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 412153624}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 316.56476, y: 637.49445, z: -1084.0337}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_RootOrder: 13
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &528901297
 GameObject:
   m_ObjectHideFlags: 0
@@ -1065,7 +1022,7 @@ GameObject:
   - component: {fileID: 573935885}
   - component: {fileID: 573935886}
   m_Layer: 0
-  m_Name: Board
+  m_Name: GameManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1148,7 +1105,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dfa6b1b5d3f1bd346af1552f34734b4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  board: {fileID: 573935886}
+  manager: {fileID: 573935886}
   mover: {fileID: 849238538}
 --- !u!4 &588436406
 Transform:
@@ -1162,7 +1119,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 16
+  m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &593224835
 GameObject:
@@ -1874,7 +1831,7 @@ Transform:
   - {fileID: 1455683051}
   - {fileID: 1936265}
   m_Father: {fileID: 0}
-  m_RootOrder: 14
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &849238537
 GameObject:
@@ -1905,7 +1862,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0575e1513c5c73468d403f27420f19b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  board: {fileID: 573935886}
+  manager: {fileID: 573935886}
 --- !u!4 &849238539
 Transform:
   m_ObjectHideFlags: 0
@@ -2452,7 +2409,7 @@ Transform:
   - {fileID: 1123251037}
   - {fileID: 705507995}
   m_Father: {fileID: 0}
-  m_RootOrder: 15
+  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1112939167
 GameObject:
@@ -2802,7 +2759,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 412153625}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: finisher.AppFinisher, Assembly-CSharp
         m_MethodName: Quit
         m_Mode: 1
@@ -3460,7 +3417,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 93e41d0da9d49904aad5915aa2fd2c62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  board: {fileID: 573935886}
+  manager: {fileID: 573935886}
   mainMenu: {fileID: 1755731643}
   gameMenu: {fileID: 201134509}
   endMenu: {fileID: 1257068066}
@@ -3897,7 +3854,7 @@ GameObject:
   - component: {fileID: 1443052637}
   - component: {fileID: 1443052636}
   m_Layer: 0
-  m_Name: BoardParser
+  m_Name: GameDataJsonConverter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4863,7 +4820,7 @@ GameObject:
   - component: {fileID: 1807142805}
   - component: {fileID: 1807142804}
   m_Layer: 0
-  m_Name: BoardSaveLoader
+  m_Name: GameSaveLoader
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4881,8 +4838,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 32c36e9c2d097fb44a6c0e1a20727f38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boardParser: {fileID: 1443052636}
-  board: {fileID: 573935886}
+  converter: {fileID: 1443052636}
+  manager: {fileID: 573935886}
 --- !u!4 &1807142805
 Transform:
   m_ObjectHideFlags: 0
@@ -5236,7 +5193,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 412153625}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: finisher.AppFinisher, Assembly-CSharp
         m_MethodName: Quit
         m_Mode: 1
