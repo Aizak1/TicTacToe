@@ -12,14 +12,17 @@ namespace mover {
 
         private Option<ChipComponent> currentChip;
 
+        // возможно ты имел в виду Y_ON_DRUGS, поскольку иначе я не могу понять что это значит
         private const float Y_ON_DRAG = 0.5f;
 
         private void Update() {
 
+            // Mover (казалось бы компонент отвечающий за передвижение) зависит от состояния игры
             if (!board.isGameProcessing) {
                 return;
             }
 
+            // какой смысл рейкастить пока не нажата кнопка мыши?
             RaycastHit hit;
             if (!Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out hit)) {
                 return;

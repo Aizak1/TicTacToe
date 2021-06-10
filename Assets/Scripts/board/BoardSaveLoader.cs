@@ -15,12 +15,15 @@ namespace board {
 
         public void LoadGame() {
             string path = GetPersistentDataPath(LOAD_GAME_PATH);
+            // допустим тут файл существует
             if (!File.Exists(path)) {
                 Debug.LogError("File does not exist");
                 return;
             }
 
+            // А тут ОС остановила процесс игры и отдала время программе, которая поменяла права на чтение файла
             string jsonData = boardParser.LoadFromJson(path);
+            // упс, несловленный эксепшн, необработанная ошибка
 
             if (string.IsNullOrWhiteSpace(jsonData)) {
                 Debug.LogError("No data in json file");
@@ -46,6 +49,7 @@ namespace board {
 
             string jsonData = boardParser.SerializeBoardData(boardData);
 
+            // а если там некорректный джсон? раз уж проверям на налл/пробелы, то почему бы уже тогда не валидировать весь джсон?
             if (string.IsNullOrWhiteSpace(jsonData)) {
                 Debug.LogError("No data to load");
                 return;

@@ -12,6 +12,7 @@ namespace board {
         Draw
     }
 
+    // класс называется доской, но ведёт себя как полноценный ящик
     public class Board : MonoBehaviour {
 
         [SerializeField]
@@ -20,11 +21,14 @@ namespace board {
         private const int BOARD_SIZE = 3;
         private const int LOWER_BOUND = 0;
 
+        // дважды храним чипы, неужели этого никак нельзя было избежать?
         public Option<ChipComponent>[,] cells;
         public List<ChipComponent> chipsInGame;
 
         public bool isBlueTurn;
 
+        // какой-то левый флаг, значение которого сложно понять без контекста использования
+        // использования таких вещей нужно избегать
         public bool isGameProcessing;
         public GameResult gameResult;
 
@@ -169,6 +173,7 @@ namespace board {
             return movesCount;
         }
 
+        // этот метод ничего не сохраняет, название врёт
         public BoardData SaveBoard() {
             ChipData[] chipDatas = new ChipData[chipsInGame.Count];
             for (int i = 0; i < chipDatas.Length; i++) {
