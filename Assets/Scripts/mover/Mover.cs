@@ -16,12 +16,6 @@ namespace mover {
 
 
         private void Update() {
-
-            // Mover (казалось бы компонент отвечающий за передвижение) зависит от состояния игры
-            if (board.gameState != GameState.InProcessing) {
-                return;
-            }
-
             if (Input.GetMouseButton(0)) {
 
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
